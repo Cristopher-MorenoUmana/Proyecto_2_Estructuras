@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-
 public final class DataLoader {
 
     private DataLoader() {
@@ -68,7 +67,7 @@ public final class DataLoader {
         }
     }
 
-    
+    // Algunos editores de Windows agregan una marca BOM al inicio del archivo
     private static String token(Scanner in) {
         return in.next().replace(String.valueOf((char) 0xFEFF), "");
     }

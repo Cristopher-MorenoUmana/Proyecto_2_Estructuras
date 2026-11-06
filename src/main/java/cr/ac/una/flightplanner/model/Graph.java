@@ -9,14 +9,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
 public class Graph {
 
     private final Map<String, Airport> airports = new LinkedHashMap<>();
     private final Map<String, List<Route>> adjacency = new HashMap<>();
-    private final List<Route> allRoutes = new ArrayList<>(); 
+    private final List<Route> allRoutes = new ArrayList<>(); // todas las del archivo
 
-   
     public static String normalizeCode(String code) {
         return code == null ? "" : code.trim().toUpperCase(Locale.ROOT);
     }
@@ -45,12 +43,12 @@ public class Graph {
         return airports.containsKey(normalizeCode(code));
     }
 
-    
+    /** Devuelve null si el codigo no existe. */
     public Airport getAirport(String code) {
         return airports.get(normalizeCode(code));
     }
 
-    
+    /** Igual que getAirport, pero lanza una excepcion con mensaje para el usuario. */
     public Airport requireAirport(String code) {
         String normalized = normalizeCode(code);
         if (normalized.isEmpty()) {
@@ -67,13 +65,13 @@ public class Graph {
         return Collections.unmodifiableCollection(airports.values());
     }
 
-    
+    /** Rutas que salen del aeropuerto (lista vacia si no existe). */
     public List<Route> getOutgoingRoutes(String code) {
         List<Route> outgoing = adjacency.get(normalizeCode(code));
         return outgoing == null ? List.of() : Collections.unmodifiableList(outgoing);
     }
 
-    
+    /** Todas las rutas del archivo. */
     public List<Route> getAllRoutes() {
         return Collections.unmodifiableList(allRoutes);
     }
