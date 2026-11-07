@@ -10,26 +10,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-<<<<<<< HEAD
 /**
  * Grafo dirigido y ponderado con lista de adyacencia.
  * adjacency guarda, por cada codigo, solo las rutas ACTIVAS que salen de ese aeropuerto.
  */
-=======
->>>>>>> ae3814dbe5fbf1ddd07335e9c9a738a048ce5277
 public class Graph {
 
     private final Map<String, Airport> airports = new LinkedHashMap<>();
     private final Map<String, List<Route>> adjacency = new HashMap<>();
-<<<<<<< HEAD
     private final List<Route> allRoutes = new ArrayList<>();       // todas las del archivo
     private final List<Route> cancelledRoutes = new ArrayList<>(); // las que estan canceladas ahora
 
     /** Los codigos se comparan en mayuscula y sin espacios, asi "sjo " tambien funciona. */
-=======
-    private final List<Route> allRoutes = new ArrayList<>(); // todas las del archivo
-
->>>>>>> ae3814dbe5fbf1ddd07335e9c9a738a048ce5277
     public static String normalizeCode(String code) {
         return code == null ? "" : code.trim().toUpperCase(Locale.ROOT);
     }
@@ -80,21 +72,13 @@ public class Graph {
         return Collections.unmodifiableCollection(airports.values());
     }
 
-<<<<<<< HEAD
     /** Rutas activas que salen del aeropuerto (lista vacia si no existe). */
-=======
-    /** Rutas que salen del aeropuerto (lista vacia si no existe). */
->>>>>>> ae3814dbe5fbf1ddd07335e9c9a738a048ce5277
     public List<Route> getOutgoingRoutes(String code) {
         List<Route> outgoing = adjacency.get(normalizeCode(code));
         return outgoing == null ? List.of() : Collections.unmodifiableList(outgoing);
     }
 
-<<<<<<< HEAD
     /** Todas las rutas del archivo, incluidas las canceladas (la interfaz las dibuja punteadas). */
-=======
-    /** Todas las rutas del archivo. */
->>>>>>> ae3814dbe5fbf1ddd07335e9c9a738a048ce5277
     public List<Route> getAllRoutes() {
         return Collections.unmodifiableList(allRoutes);
     }
