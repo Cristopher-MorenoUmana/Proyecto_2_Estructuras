@@ -10,10 +10,13 @@ import java.nio.file.Path;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+<<<<<<< HEAD
 /**
  * Lee aeropuertos.txt y rutas.txt palabra por palabra.
  * El primer numero de cada archivo es la cantidad de registros que siguen.
  */
+=======
+>>>>>>> ae3814dbe5fbf1ddd07335e9c9a738a048ce5277
 public final class DataLoader {
 
     private DataLoader() {

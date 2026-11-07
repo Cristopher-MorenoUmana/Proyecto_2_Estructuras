@@ -1,10 +1,15 @@
 package cr.ac.una.flightplanner;
 
 import cr.ac.una.flightplanner.algorithm.BreadthFirstSearch;
+<<<<<<< HEAD
 import cr.ac.una.flightplanner.algorithm.DepthFirstSearch;
 import cr.ac.una.flightplanner.algorithm.Dijkstra;
 import cr.ac.una.flightplanner.algorithm.PathResult;
 import cr.ac.una.flightplanner.algorithm.ReachabilityResult;
+=======
+import cr.ac.una.flightplanner.algorithm.Dijkstra;
+import cr.ac.una.flightplanner.algorithm.PathResult;
+>>>>>>> ae3814dbe5fbf1ddd07335e9c9a738a048ce5277
 import cr.ac.una.flightplanner.model.Airport;
 import cr.ac.una.flightplanner.model.Graph;
 import cr.ac.una.flightplanner.model.Route;
@@ -12,10 +17,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
+<<<<<<< HEAD
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+=======
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+>>>>>>> ae3814dbe5fbf1ddd07335e9c9a738a048ce5277
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,7 +43,11 @@ class GraphAlgorithmsTest {
         graph.addRoute(new Route("A", "C", 60, 5));    // A-C-E-D: la mas barata
         graph.addRoute(new Route("C", "E", 60, 5));
         graph.addRoute(new Route("E", "D", 60, 5));
+<<<<<<< HEAD
         // F queda aislado
+=======
+        // F queda aislado (no llega ninguna ruta)
+>>>>>>> ae3814dbe5fbf1ddd07335e9c9a738a048ce5277
         return graph;
     }
 
@@ -85,7 +99,10 @@ class GraphAlgorithmsTest {
         Graph graph = sampleGraph();
         assertThrows(IllegalArgumentException.class, () -> BreadthFirstSearch.fewestFlights(graph, "A", "ZZZ"));
         assertThrows(IllegalArgumentException.class, () -> Dijkstra.shortestPath(graph, "", "A", Route::minutes));
+<<<<<<< HEAD
         assertThrows(IllegalArgumentException.class, () -> DepthFirstSearch.reachableFrom(graph, "ZZZ"));
+=======
+>>>>>>> ae3814dbe5fbf1ddd07335e9c9a738a048ce5277
     }
 
     @Test
@@ -96,6 +113,7 @@ class GraphAlgorithmsTest {
     }
 
     @Test
+<<<<<<< HEAD
     void dfsSplitsReachableAndUnreachable() {
         Graph graph = sampleGraph();
 
@@ -139,6 +157,8 @@ class GraphAlgorithmsTest {
     }
 
     @Test
+=======
+>>>>>>> ae3814dbe5fbf1ddd07335e9c9a738a048ce5277
     void dijkstraRejectsNegativeWeights() {
         Graph graph = sampleGraph();
         graph.addRoute(new Route("D", "A", 5, -20)); // un "reembolso"
