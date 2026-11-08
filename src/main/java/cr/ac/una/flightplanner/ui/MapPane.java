@@ -28,7 +28,7 @@ public class MapPane extends Pane {
 
     private final Group edgeLayer = new Group();
     private final Group nodeLayer = new Group();
-    private final Group overlayLayer = new Group(); // reservada para el avion animado
+    private final Group overlayLayer = new Group(); // encima de todo: el avion animado (FlightAnimator)
 
     public MapPane(Graph graph, Consumer<Airport> onAirportSelected) {
         this.graph = graph;

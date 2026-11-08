@@ -20,6 +20,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -29,6 +30,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /** Ventana principal: mapa a la izquierda, panel de control a la derecha. */
 public class App extends Application {
@@ -38,10 +40,12 @@ public class App extends Application {
     private final ComboBox<Criterion> criterionBox = new ComboBox<>();
     private final TextArea output = new TextArea();
     private final ScrollPane mapScroll = new ScrollPane();
+    private final Label flightStatus = new Label();
 
     private Stage stage;
     private Graph graph;
     private MapPane mapPane;
+    private FlightAnimator animator;
 
     @Override
     public void start(Stage primaryStage) {
@@ -72,13 +76,28 @@ public class App extends Application {
         output.setEditable(false);
         output.setWrapText(true);
         output.setStyle("-fx-font-family: monospace;");
+        output.setMinHeight(120);
         VBox.setVgrow(output, Priority.ALWAYS);
+
+        flightStatus.setWrapText(true);
+        flightStatus.setMinHeight(70);
+        flightStatus.setStyle("-fx-font-family: monospace; -fx-background-color: #FFF3E0; -fx-padding: 6;");
+        flightStatus.setMaxWidth(Double.MAX_VALUE);
+
+        Button pause = button("Pausar / continuar", () -> withAnimator(FlightAnimator::togglePause));
+        Button restart = button("Reiniciar vuelo", () -> withAnimator(FlightAnimator::restart));
+        HBox.setHgrow(pause, Priority.ALWAYS);
+        HBox.setHgrow(restart, Priority.ALWAYS);
+        HBox animationControls = new HBox(8, pause, restart);
 
         VBox panel = new VBox(8,
                 new Label("Origen"), originField,
                 new Label("Destino"), destinationField,
                 new Label("Criterio"), criterionBox,
                 button("Buscar ruta", this::search),
+                animationControls,
+                flightStatus,
+                button("Consultar aeropuerto (origen)", this::showAirport),
                 button("Alcanzables desde el origen", this::showReachableFrom),
                 button("Desde donde se llega al destino", this::showReachingTo),
                 button("Cancelar ruta origen -> destino", this::cancelRoute),
@@ -98,11 +117,29 @@ public class App extends Application {
         return button;
     }
 
+    private void withAnimator(Consumer<FlightAnimator> action) {
+        if (animator == null) {
+            flightStatus.setText("Primero hay que cargar los archivos de datos.");
+            return;
+        }
+        action.accept(animator);
+    }
+
+    /** Detiene el avion; se llama antes de cualquier accion que cambie lo que muestra el mapa. */
+    private void stopAnimation() {
+        if (animator != null) {
+            animator.stop();
+        }
+        flightStatus.setText("");
+    }
+
     private void loadData(Path folder) {
         try {
             Graph loaded = DataLoader.load(folder.resolve("aeropuertos.txt"), folder.resolve("rutas.txt"));
+            stopAnimation();
             graph = loaded;
             mapPane = new MapPane(graph, this::onAirportSelected);
+            animator = new FlightAnimator(mapPane, flightStatus::setText);
             mapScroll.setContent(mapPane);
             originField.clear();
             destinationField.clear();
@@ -132,6 +169,7 @@ public class App extends Application {
         } else {
             destinationField.setText(airport.code());
         }
+        stopAnimation();
         mapPane.resetView();
         markSelection();
         output.setText(ResultFormatter.airport(graph, airport));
@@ -150,10 +188,27 @@ public class App extends Application {
         return true;
     }
 
+    // 4.1: datos y rutas salientes de un aeropuerto escrito por texto
+    private void showAirport() {
+        if (!hasData()) {
+            return;
+        }
+        stopAnimation();
+        try {
+            Airport airport = graph.requireAirport(originField.getText());
+            mapPane.resetView();
+            mapPane.markAirport(airport.code(), AirportNode.State.ORIGIN);
+            output.setText(ResultFormatter.airport(graph, airport));
+        } catch (IllegalArgumentException e) {
+            output.setText(e.getMessage());
+        }
+    }
+
     private void search() {
         if (!hasData()) {
             return;
         }
+        stopAnimation();
         try {
             Criterion criterion = criterionBox.getValue();
             String from = Graph.normalizeCode(originField.getText());
@@ -162,6 +217,7 @@ public class App extends Application {
             if (result.isPresent()) {
                 mapPane.showRoute(result.get());
                 output.setText(ResultFormatter.route(criterion, result.get()));
+                animator.start(result.get());
             } else {
                 mapPane.resetView();
                 markSelection();
@@ -176,6 +232,7 @@ public class App extends Application {
         if (!hasData()) {
             return;
         }
+        stopAnimation();
         try {
             ReachabilityResult result = DepthFirstSearch.reachableFrom(graph, originField.getText());
             mapPane.showReachability(result, AirportNode.State.ORIGIN);
@@ -189,6 +246,7 @@ public class App extends Application {
         if (!hasData()) {
             return;
         }
+        stopAnimation();
         try {
             ReachabilityResult result = DepthFirstSearch.reachingTo(graph, destinationField.getText());
             mapPane.showReachability(result, AirportNode.State.DESTINATION);
@@ -202,6 +260,7 @@ public class App extends Application {
         if (!hasData()) {
             return;
         }
+        stopAnimation();
         try {
             String from = graph.requireAirport(originField.getText()).code();
             String to = graph.requireAirport(destinationField.getText()).code();
@@ -223,6 +282,7 @@ public class App extends Application {
         if (!hasData()) {
             return;
         }
+        stopAnimation();
         int count = graph.getCancelledRoutes().size();
         graph.restoreAll();
         mapPane.resetView();
@@ -234,6 +294,7 @@ public class App extends Application {
         if (!hasData()) {
             return;
         }
+        stopAnimation();
         originField.clear();
         destinationField.clear();
         mapPane.resetView();
