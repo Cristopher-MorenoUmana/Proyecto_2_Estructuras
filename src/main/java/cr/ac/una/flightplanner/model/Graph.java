@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Grafo dirigido y ponderado con lista de adyacencia.
- * adjacency guarda, por cada codigo, solo las rutas ACTIVAS que salen de ese aeropuerto.
- */
 public class Graph {
 
     private final Map<String, Airport> airports = new LinkedHashMap<>();
@@ -21,7 +17,6 @@ public class Graph {
     private final List<Route> allRoutes = new ArrayList<>();       // todas las del archivo
     private final List<Route> cancelledRoutes = new ArrayList<>(); // las que estan canceladas ahora
 
-    /** Los codigos se comparan en mayuscula y sin espacios, asi "sjo " tambien funciona. */
     public static String normalizeCode(String code) {
         return code == null ? "" : code.trim().toUpperCase(Locale.ROOT);
     }
@@ -50,12 +45,10 @@ public class Graph {
         return airports.containsKey(normalizeCode(code));
     }
 
-    /** Devuelve null si el codigo no existe. */
     public Airport getAirport(String code) {
         return airports.get(normalizeCode(code));
     }
 
-    /** Igual que getAirport, pero lanza una excepcion con mensaje para el usuario. */
     public Airport requireAirport(String code) {
         String normalized = normalizeCode(code);
         if (normalized.isEmpty()) {
@@ -72,13 +65,11 @@ public class Graph {
         return Collections.unmodifiableCollection(airports.values());
     }
 
-    /** Rutas activas que salen del aeropuerto (lista vacia si no existe). */
     public List<Route> getOutgoingRoutes(String code) {
         List<Route> outgoing = adjacency.get(normalizeCode(code));
         return outgoing == null ? List.of() : Collections.unmodifiableList(outgoing);
     }
 
-    /** Todas las rutas del archivo, incluidas las canceladas (la interfaz las dibuja punteadas). */
     public List<Route> getAllRoutes() {
         return Collections.unmodifiableList(allRoutes);
     }
@@ -95,10 +86,6 @@ public class Graph {
         return allRoutes.size() - cancelledRoutes.size();
     }
 
-    /**
-     * Quita del grafo en memoria la ruta origen -> destino (el archivo no se toca).
-     * Devuelve cuantas rutas quito; 0 si no existia o ya estaba cancelada.
-     */
     public int cancelRoute(String originCode, String destinationCode) {
         String destination = normalizeCode(destinationCode);
         List<Route> outgoing = adjacency.get(normalizeCode(originCode));

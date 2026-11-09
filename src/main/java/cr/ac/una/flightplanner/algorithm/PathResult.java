@@ -7,10 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Resultado de una busqueda: la secuencia de codigos y las rutas usadas en cada tramo.
- * Si origen y destino son el mismo aeropuerto, codes tiene un solo elemento y routes esta vacia.
- */
 public record PathResult(List<String> codes, List<Route> routes) {
 
     public int flights() {
@@ -33,11 +29,7 @@ public record PathResult(List<String> codes, List<Route> routes) {
         return sum;
     }
 
-    /**
-     * Reconstruye el camino caminando hacia atras desde el destino.
-     * previous guarda, para cada aeropuerto, la ruta con la que se llego a el.
-     */
-    static PathResult fromPredecessors(String origin, String destination, Map<String, Route> previous) {
+   static PathResult fromPredecessors(String origin, String destination, Map<String, Route> previous) {
         LinkedList<Route> routes = new LinkedList<>();
         String current = destination;
         while (!current.equals(origin)) {

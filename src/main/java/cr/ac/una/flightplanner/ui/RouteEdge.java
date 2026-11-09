@@ -7,11 +7,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 
-/**
- * Vista de una ruta dirigida: linea + punta de flecha.
- * La linea va del borde de un circulo al borde del otro, asi la flecha nunca queda tapada.
- * Como A->B y B->A pueden coexistir con pesos distintos, cada una se desplaza un poco hacia un lado.
- */
 public class RouteEdge extends Group {
 
     public enum State {
@@ -24,7 +19,7 @@ public class RouteEdge extends Group {
 
     private final Route route;
     private final Line line = new Line();
-    private final Line hitArea = new Line(); // linea ancha e invisible para que el tooltip sea facil de activar
+    private final Line hitArea = new Line();
     private final Polygon arrow = new Polygon();
 
     public RouteEdge(Route route, AirportNode from, AirportNode to) {
@@ -35,12 +30,11 @@ public class RouteEdge extends Group {
         double length = Math.hypot(dx, dy);
 
         if (length > 0) {
-            double ux = dx / length; // direccion unitaria de origen a destino
+            double ux = dx / length;
             double uy = dy / length;
-            double nx = -uy;         // perpendicular, de donde sale el desplazamiento lateral
+            double nx = -uy;
             double ny = ux;
 
-            // punto del borde del circulo que queda a SIDE_OFFSET de la recta que une los centros
             double along = Math.sqrt(Math.max(0, AirportNode.RADIUS * AirportNode.RADIUS - SIDE_OFFSET * SIDE_OFFSET));
             double startX = from.getCenterX() + ux * along + nx * SIDE_OFFSET;
             double startY = from.getCenterY() + uy * along + ny * SIDE_OFFSET;
@@ -50,7 +44,6 @@ public class RouteEdge extends Group {
             setLinePoints(line, startX, startY, endX, endY);
             setLinePoints(hitArea, startX, startY, endX, endY);
 
-            // triangulo con la punta en (endX, endY); se calculan los 3 vertices sin usar rotaciones
             double baseX = endX - ux * ARROW_LENGTH;
             double baseY = endY - uy * ARROW_LENGTH;
             arrow.getPoints().setAll(
@@ -99,7 +92,7 @@ public class RouteEdge extends Group {
             line.getStrokeDashArray().clear();
         }
         if (state == State.HIGHLIGHTED) {
-            toFront(); // por encima de las demas aristas, pero siempre debajo de los aeropuertos
+            toFront();
         }
     }
 

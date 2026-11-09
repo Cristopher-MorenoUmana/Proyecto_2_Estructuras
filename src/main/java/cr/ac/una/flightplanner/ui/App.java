@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-/** Ventana principal: mapa a la izquierda, panel de control a la derecha. */
 public class App extends Application {
 
     private final TextField originField = new TextField();
@@ -61,7 +60,6 @@ public class App extends Application {
         stage.setScene(new Scene(root, 1340, 860));
         stage.show();
 
-        // carpeta con aeropuertos.txt y rutas.txt: primer argumento, o "data" por defecto
         List<String> args = getParameters().getRaw();
         loadData(Path.of(args.isEmpty() ? "data" : args.get(0)));
     }
@@ -125,7 +123,6 @@ public class App extends Application {
         action.accept(animator);
     }
 
-    /** Detiene el avion; se llama antes de cualquier accion que cambie lo que muestra el mapa. */
     private void stopAnimation() {
         if (animator != null) {
             animator.stop();
@@ -160,7 +157,6 @@ public class App extends Application {
         }
     }
 
-    // Clic en un aeropuerto: muestra sus datos y lo usa como origen, y luego como destino
     private void onAirportSelected(Airport airport) {
         boolean startOver = originField.getText().isBlank() || !destinationField.getText().isBlank();
         if (startOver) {
@@ -188,7 +184,6 @@ public class App extends Application {
         return true;
     }
 
-    // 4.1: datos y rutas salientes de un aeropuerto escrito por texto
     private void showAirport() {
         if (!hasData()) {
             return;

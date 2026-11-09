@@ -11,13 +11,11 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 
-/** BFS: la ruta con menos vuelos (todas las aristas cuentan igual). Complejidad O(n + m). */
 public final class BreadthFirstSearch {
 
     private BreadthFirstSearch() {
     }
 
-    /** Vacio si no existe ruta. Lanza IllegalArgumentException si algun codigo no existe. */
     public static Optional<PathResult> fewestFlights(Graph graph, String originCode, String destinationCode) {
         String origin = graph.requireAirport(originCode).code();
         String destination = graph.requireAirport(destinationCode).code();
@@ -34,7 +32,7 @@ public final class BreadthFirstSearch {
                 break;
             }
             for (Route route : graph.getOutgoingRoutes(current)) {
-                // el primer nivel que alcanza un aeropuerto es el que tiene menos vuelos
+                
                 if (visited.add(route.destination())) {
                     previous.put(route.destination(), route);
                     queue.add(route.destination());

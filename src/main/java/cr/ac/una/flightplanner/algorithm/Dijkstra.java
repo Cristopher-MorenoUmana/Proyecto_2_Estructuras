@@ -10,10 +10,6 @@ import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.function.ToIntFunction;
 
-/**
- * Un solo Dijkstra para los dos criterios: el peso se recibe como parametro
- * (Route::minutes o Route::cost). Con cola de prioridad: O((n + m) log n).
- */
 public final class Dijkstra {
 
     private Dijkstra() {
@@ -22,7 +18,6 @@ public final class Dijkstra {
     private record QueueEntry(String code, int distance) {
     }
 
-    /** Vacio si no existe ruta. Lanza IllegalArgumentException si un codigo no existe o hay pesos negativos. */
     public static Optional<PathResult> shortestPath(Graph graph, String originCode, String destinationCode,
                                                     ToIntFunction<Route> weight) {
         String origin = graph.requireAirport(originCode).code();
@@ -36,11 +31,11 @@ public final class Dijkstra {
 
         while (!queue.isEmpty()) {
             QueueEntry current = queue.poll();
-            // la cola puede traer entradas viejas de un aeropuerto que ya mejoro; se ignoran
+            
             if (current.distance() > distance.get(current.code())) {
                 continue;
             }
-            // con pesos no negativos, la primera vez que sale el destino su distancia ya es la minima
+            
             if (current.code().equals(destination)) {
                 break;
             }

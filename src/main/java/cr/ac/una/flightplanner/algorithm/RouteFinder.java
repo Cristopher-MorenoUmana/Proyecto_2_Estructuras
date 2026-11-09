@@ -5,7 +5,6 @@ import cr.ac.una.flightplanner.model.Route;
 
 import java.util.Optional;
 
-/** Punto unico de entrada para la interfaz: elige el algoritmo segun el criterio. */
 public final class RouteFinder {
 
     private RouteFinder() {

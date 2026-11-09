@@ -12,10 +12,6 @@ import javafx.scene.text.Text;
 
 import java.util.function.Consumer;
 
-/**
- * Vista de un aeropuerto: un punto con su codigo encima.
- * Se coloca solo con las coordenadas del archivo; el texto se centra con su ancho real.
- */
 public class AirportNode extends Group {
 
     public static final double RADIUS = 5;
@@ -56,7 +52,7 @@ public class AirportNode extends Group {
         label.setFont(Font.font("System", FontWeight.BOLD, 10));
         label.setX(airport.x() - label.getLayoutBounds().getWidth() / 2);
         label.setY(airport.y() - RADIUS - 3);
-        // el texto no debe robarle los clics al circulo
+        
         label.setMouseTransparent(true);
 
         getChildren().addAll(circle, label);
@@ -79,7 +75,7 @@ public class AirportNode extends Group {
         circle.setFill(state.color());
         label.setFill(state == State.UNREACHABLE ? Color.GRAY : Color.BLACK);
         if (state != State.NORMAL && state != State.UNREACHABLE) {
-            toFront(); // que un punto resaltado no quede tapado por uno vecino
+            toFront();
         }
     }
 

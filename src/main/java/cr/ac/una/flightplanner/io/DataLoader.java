@@ -10,10 +10,6 @@ import java.nio.file.Path;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-/**
- * Lee aeropuertos.txt y rutas.txt palabra por palabra.
- * El primer numero de cada archivo es la cantidad de registros que siguen.
- */
 public final class DataLoader {
 
     private DataLoader() {
@@ -71,7 +67,6 @@ public final class DataLoader {
         }
     }
 
-    // Algunos editores de Windows agregan una marca BOM al inicio del archivo
     private static String token(Scanner in) {
         return in.next().replace(String.valueOf((char) 0xFEFF), "");
     }

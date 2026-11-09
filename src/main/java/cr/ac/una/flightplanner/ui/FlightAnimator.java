@@ -9,18 +9,9 @@ import javafx.scene.shape.Polygon;
 
 import java.util.function.Consumer;
 
-/**
- * Anima un avion que recorre la ruta tramo por tramo.
- *
- * Funciona como una maquina de estados que avanza en cada cuadro (AnimationTimer):
- *   VOLANDO el tramo i  -> la posicion se interpola entre el aeropuerto i y el i + 1
- *   ESCALA en i + 1     -> el avion se queda quieto STOPOVER_MS milisegundos
- *   TERMINADO           -> el avion queda en el destino
- * Pausar detiene el timer; al continuar se descarta el tiempo que estuvo en pausa.
- */
 public class FlightAnimator {
 
-    private static final double MS_PER_MINUTE = 8;   // 100 min de vuelo = 0,8 s de animacion
+    private static final double MS_PER_MINUTE = 8;
     private static final double MIN_LEG_MS = 900;
     private static final double MAX_LEG_MS = 3500;
     private static final double STOPOVER_MS = 900;
@@ -31,14 +22,14 @@ public class FlightAnimator {
     private final AnimationTimer timer;
 
     private PathResult path;
-    private int leg;              // indice del tramo actual (0 .. vuelos - 1)
-    private boolean inStopover;   // true mientras espera en la escala al final del tramo leg
+    private int leg;
+    private boolean inStopover;
     private boolean finished;
     private boolean running;
-    private double elapsedMs;     // tiempo transcurrido dentro del estado actual
-    private long lastNanos;       // marca del cuadro anterior; 0 = todavia no hay
-    private int doneMinutes;      // minutos de los tramos ya completados
-    private int doneCost;         // costo de los tramos ya completados
+    private double elapsedMs;
+    private long lastNanos;
+    private int doneMinutes;
+    private int doneCost;
 
     public FlightAnimator(MapPane map, Consumer<String> status) {
         this.map = map;
@@ -54,8 +45,7 @@ public class FlightAnimator {
         };
     }
 
-    /** Empieza a animar una ruta nueva. Si la ruta no tiene vuelos (origen = destino) no hace nada. */
-    public void start(PathResult newPath) {
+   public void start(PathResult newPath) {
         stop();
         if (newPath.flights() == 0) {
             return;
@@ -64,7 +54,6 @@ public class FlightAnimator {
         restart();
     }
 
-    /** Vuelve a empezar desde el origen la ultima ruta animada. */
     public void restart() {
         if (path == null) {
             status.accept("Primero busque una ruta para animar.");
@@ -99,7 +88,6 @@ public class FlightAnimator {
         }
     }
 
-    /** Detiene la animacion y oculta el avion (se usa al limpiar el mapa o cambiar de consulta). */
     public void stop() {
         timer.stop();
         running = false;
@@ -109,7 +97,7 @@ public class FlightAnimator {
 
     private void resume() {
         running = true;
-        lastNanos = 0; // el primer cuadro solo toma la referencia de tiempo
+        lastNanos = 0;
         timer.start();
         publish();
     }
@@ -151,12 +139,10 @@ public class FlightAnimator {
         publish();
     }
 
-    // la duracion en pantalla es proporcional a los minutos del vuelo, con un minimo y un maximo
     private static double legDuration(Route route) {
         return Math.max(MIN_LEG_MS, Math.min(MAX_LEG_MS, route.minutes() * MS_PER_MINUTE));
     }
 
-    /** Ubica el avion en el tramo actual: t = 0 en el aeropuerto de salida, t = 1 en el de llegada. */
     private void placePlane(double t) {
         AirportNode from = map.getNode(path.codes().get(leg));
         AirportNode to = map.getNode(path.codes().get(leg + 1));
@@ -164,7 +150,7 @@ public class FlightAnimator {
         double y = from.getCenterY() + (to.getCenterY() - from.getCenterY()) * t;
         plane.setLayoutX(x);
         plane.setLayoutY(y);
-        // la figura apunta hacia +x; se gira hacia el destino del tramo
+        
         plane.setRotate(Math.toDegrees(Math.atan2(to.getCenterY() - from.getCenterY(),
                 to.getCenterX() - from.getCenterX())));
     }
@@ -186,7 +172,7 @@ public class FlightAnimator {
         } else {
             text.append("Tramo ").append(leg + 1).append(" de ").append(path.flights()).append(": ")
                     .append(route.origin()).append(" -> ").append(route.destination());
-            // durante el tramo, los minutos avanzan con el avion y el costo del tramo ya se cuenta
+            
             minutes += (int) Math.round(route.minutes() * Math.min(1, elapsedMs / legDuration(route)));
             cost += route.cost();
         }
@@ -198,7 +184,6 @@ public class FlightAnimator {
         status.accept(text.toString());
     }
 
-    // avion simple centrado en (0, 0) y apuntando hacia la derecha, para que setRotate gire sobre su centro
     private static Group buildPlane() {
         Polygon body = new Polygon(
                 11, 0,

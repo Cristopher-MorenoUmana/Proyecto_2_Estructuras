@@ -14,13 +14,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-/** DFS iterativo con pila explicita (sin recursion). Complejidad O(n + m). */
 public final class DepthFirstSearch {
 
     private DepthFirstSearch() {
     }
 
-    /** Aeropuertos a los que se puede llegar desde origin, con cualquier cantidad de escalas, y los que no. */
     public static ReachabilityResult reachableFrom(Graph graph, String originCode) {
         String origin = graph.requireAirport(originCode).code();
         Set<String> visited = traverse(origin, code -> {
@@ -33,10 +31,6 @@ public final class DepthFirstSearch {
         return split(graph, origin, visited);
     }
 
-    /**
-     * Desde cuales aeropuertos se puede llegar a destination: el mismo DFS, pero sobre el grafo con
-     * las aristas invertidas (se arma una vez, en O(n + m)).
-     */
     public static ReachabilityResult reachingTo(Graph graph, String destinationCode) {
         String destination = graph.requireAirport(destinationCode).code();
         Map<String, List<String>> reversed = new HashMap<>();
@@ -55,7 +49,7 @@ public final class DepthFirstSearch {
         stack.push(start);
         while (!stack.isEmpty()) {
             String current = stack.pop();
-            // un aeropuerto puede entrar varias veces a la pila; solo se procesa la primera vez que sale
+
             if (!visited.add(current)) {
                 continue;
             }

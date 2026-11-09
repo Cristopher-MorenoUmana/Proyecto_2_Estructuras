@@ -9,7 +9,6 @@ import cr.ac.una.flightplanner.model.Route;
 
 import java.util.List;
 
-/** Convierte resultados en el texto que se muestra en el panel. */
 public final class ResultFormatter {
 
     private ResultFormatter() {

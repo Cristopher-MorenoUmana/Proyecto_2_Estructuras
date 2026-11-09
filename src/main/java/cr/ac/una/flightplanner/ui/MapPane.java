@@ -13,22 +13,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-/**
- * Mapa completo. Es un Pane (no un StackPane) porque todo se ubica con coordenadas absolutas;
- * el orden de las capas decide que queda encima de que.
- */
 public class MapPane extends Pane {
 
     private static final double MARGIN = 40;
 
     private final Graph graph;
     private final Map<String, AirportNode> nodes = new LinkedHashMap<>();
-    // por identidad: dos lineas iguales en el archivo siguen siendo dos rutas distintas
+
     private final Map<Route, RouteEdge> edges = new IdentityHashMap<>();
 
     private final Group edgeLayer = new Group();
     private final Group nodeLayer = new Group();
-    private final Group overlayLayer = new Group(); // encima de todo: el avion animado (FlightAnimator)
+    private final Group overlayLayer = new Group();
 
     public MapPane(Graph graph, Consumer<Airport> onAirportSelected) {
         this.graph = graph;
@@ -64,7 +60,6 @@ public class MapPane extends Pane {
         return nodes.get(Graph.normalizeCode(code));
     }
 
-    /** Todo vuelve a su aspecto normal; las rutas canceladas siguen punteadas. */
     public void resetView() {
         for (AirportNode node : nodes.values()) {
             node.setState(AirportNode.State.NORMAL);
@@ -100,7 +95,6 @@ public class MapPane extends Pane {
         }
     }
 
-    /** Alcanzables en verde, no alcanzables en gris y el aeropuerto de referencia con su propio color. */
     public void showReachability(ReachabilityResult result, AirportNode.State referenceState) {
         resetView();
         for (String code : result.reached()) {
